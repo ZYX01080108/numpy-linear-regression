@@ -73,6 +73,7 @@ b = b - learning_rate * db
 ```text
 .
 ├── train.py
+├── compare_sklearn.py
 ├── requirements.txt
 ├── src/
 │   ├── data.py
@@ -86,6 +87,7 @@ b = b - learning_rate * db
 各文件作用：
 
 - `train.py`：项目入口，负责生成数据、训练模型、保存图片
+- `compare_sklearn.py`：将手写 NumPy 模型和 `sklearn.LinearRegression` 做对照
 - `src/data.py`：生成带噪声的线性数据
 - `src/model.py`：实现预测、MSE loss、梯度计算和训练循环
 - `src/visualize.py`：使用 Matplotlib 画图
@@ -117,6 +119,12 @@ pip install -r requirements.txt
 python train.py
 ```
 
+运行 sklearn 对照实验：
+
+```powershell
+python compare_sklearn.py
+```
+
 ## 实验结果
 
 当前训练设置：
@@ -139,6 +147,31 @@ y = 5.0000x - 1.0000
 ```
 
 由于数据中加入了随机噪声，所以模型学到的参数不会和真实参数完全一致，但已经非常接近。
+
+## sklearn 对照实验
+
+为了验证手写实现是否正确，本项目还使用 `sklearn.LinearRegression` 在同一份数据上训练模型。
+
+对照结果：
+
+```text
+真实规律:
+  y = 5.0000x - 1.0000
+
+手写 NumPy 模型:
+  y = 5.0118x - 1.1597
+  final loss = 0.8149
+
+sklearn LinearRegression:
+  y = 5.0138x - 1.1728
+  final loss = 0.8149
+
+两者差距:
+  w difference = 0.001976
+  b difference = 0.013144
+```
+
+这个结果说明：手写梯度下降模型和成熟机器学习库得到的结果几乎一致，说明实现逻辑是正确的。
 
 ## 可视化结果
 
@@ -163,7 +196,6 @@ Loss 曲线：
 
 ## 下一步
 
-- 使用 `scikit-learn` 的 `LinearRegression` 做对照实验。
 - 扩展到多元线性回归。
 - 给 `learning_rate` 和 `epochs` 增加命令行参数。
 - 为 loss 和梯度计算补充简单测试。
