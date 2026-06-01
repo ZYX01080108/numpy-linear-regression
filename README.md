@@ -1,60 +1,74 @@
-# NumPy Linear Regression
+# NumPy 手写线性回归
 
-This project implements simple linear regression from scratch with NumPy. It uses gradient descent to learn the parameters of a line:
+这是我的第一个 AI 学习项目：使用 NumPy 从零实现一元线性回归，并用梯度下降学习直线参数。
+
+项目没有使用 `scikit-learn` 等机器学习库来训练模型，而是手写了预测、损失函数、梯度计算和参数更新过程。目标是理解机器学习训练循环的核心逻辑：
+
+```text
+预测 -> 计算损失 -> 计算梯度 -> 更新参数
+```
+
+## 项目目标
+
+本项目要学习的问题是：
 
 ```text
 y = wx + b
 ```
 
-The goal is to understand the core training loop behind machine learning:
+其中：
 
-```text
-predict -> compute loss -> compute gradients -> update parameters
-```
+- `x` 是输入数据
+- `y` 是真实结果
+- `w` 是权重，也就是直线斜率
+- `b` 是偏置，也就是直线截距
 
-## Motivation
+模型的目标是通过训练学出接近真实规律的 `w` 和 `b`。
 
-This is my first AI learning project. Instead of calling a machine learning library such as scikit-learn, I manually implement the main parts of linear regression:
+## 方法原理
 
-- data generation
-- prediction
-- mean squared error loss
-- gradient computation
-- gradient descent
-- visualization with Matplotlib
-
-## Method
-
-The synthetic data is generated from:
+训练数据由下面的规则生成：
 
 ```text
 y = 5x - 1 + noise
 ```
 
-The model starts with:
+其中 `noise` 是随机噪声，用来模拟真实数据中的误差。
+
+模型一开始设置：
 
 ```text
 w = 0
 b = 0
 ```
 
-For each training step, the model computes:
+每一轮训练都会计算预测值：
 
 ```text
 y_pred = wx + b
+```
+
+然后使用均方误差作为损失函数：
+
+```text
 loss = mean((y_pred - y)^2)
+```
+
+接着计算 `w` 和 `b` 的梯度：
+
+```text
 dw = mean(2 * (y_pred - y) * x)
 db = mean(2 * (y_pred - y))
 ```
 
-Then it updates the parameters:
+最后用梯度下降更新参数：
 
 ```text
 w = w - learning_rate * dw
 b = b - learning_rate * db
 ```
 
-## Project Structure
+## 项目结构
 
 ```text
 .
@@ -69,72 +83,87 @@ b = b - learning_rate * db
     └── prediction_plot.png
 ```
 
-## How to Run
+各文件作用：
 
-Create and activate a virtual environment:
+- `train.py`：项目入口，负责生成数据、训练模型、保存图片
+- `src/data.py`：生成带噪声的线性数据
+- `src/model.py`：实现预测、MSE loss、梯度计算和训练循环
+- `src/visualize.py`：使用 Matplotlib 画图
+- `outputs/`：保存训练结果图片
+
+## 如何运行
+
+创建虚拟环境：
 
 ```powershell
 python -m venv .venv
+```
+
+激活虚拟环境：
+
+```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Install dependencies:
+安装依赖：
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-Run training:
+运行训练：
 
 ```powershell
 python train.py
 ```
 
-## Results
+## 实验结果
 
-With:
+当前训练设置：
 
 ```text
 learning_rate = 0.001
 epochs = 10000
 ```
 
-The model learns approximately:
+训练后模型学到的结果约为：
 
 ```text
 y = 5.0118x - 1.1597
 ```
 
-The true rule is:
+真实规律是：
 
 ```text
 y = 5.0000x - 1.0000
 ```
 
-The result is not exactly the same because the training data includes random noise.
+由于数据中加入了随机噪声，所以模型学到的参数不会和真实参数完全一致，但已经非常接近。
 
-## Visualizations
+## 可视化结果
 
-Loss curve:
+Loss 曲线：
 
 ![Loss Curve](outputs/loss_curve.png)
 
-Prediction plot:
+预测结果：
 
 ![Prediction Plot](outputs/prediction_plot.png)
 
-## What I Learned
+## 我学到了什么
 
-- Linear regression can be trained with gradient descent.
-- Mean squared error measures the average prediction error.
-- Gradients tell the model how to update `w` and `b`.
-- A learning rate that is too small makes training slow.
-- A learning rate that is too large can make training unstable.
-- NumPy makes it possible to compute over many data points at once.
+- 线性回归可以用梯度下降训练。
+- MSE 可以衡量预测值和真实值之间的平均误差。
+- 梯度表示 loss 对参数变化的敏感程度。
+- 负梯度方向是让 loss 下降的方向。
+- 学习率太小会导致训练很慢。
+- 学习率太大可能导致训练发散，甚至出现 `nan`。
+- NumPy 可以用向量化方式同时处理很多数据点。
+- Matplotlib 可以帮助我们可视化训练过程和预测结果。
 
-## Next Steps
+## 下一步
 
-- Compare this implementation with scikit-learn's `LinearRegression`.
-- Extend the project to multiple linear regression.
-- Add command-line arguments for learning rate and epochs.
-- Write unit tests for loss and gradient computation.
+- 使用 `scikit-learn` 的 `LinearRegression` 做对照实验。
+- 扩展到多元线性回归。
+- 给 `learning_rate` 和 `epochs` 增加命令行参数。
+- 为 loss 和梯度计算补充简单测试。
